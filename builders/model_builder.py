@@ -1,4 +1,4 @@
-from model.VGG import vgg9, vgg11, vgg13, vgg15, vgg9_bn, vgg11_bn, vgg13_bn, vgg15_bn
+from model.VGG import vgg9, vgg11, vgg13, vgg15, vgg9_bn, vgg11_bn, vgg13_bn, vgg15_bn, vgg15_bn_gap
 from model.SQNet import SQNet
 from model.LinkNet import LinkNet
 from model.SegNet import SegNet
@@ -53,6 +53,6 @@ def build_model(model_name, num_classes):
         return FSSNet(classes=num_classes)
     elif model_name == 'FPENet':
         return FPENet(classes=num_classes)
-    elif model_name in ["vgg9", "vgg11", "vgg13", "vgg15", "vgg9_bn", "vgg11_bn", "vgg13_bn", "vgg15_bn"]:
+    else:
         model_name = eval(model_name)
         return model_name(classes=num_classes)
