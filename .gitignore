@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pth
+.idea/
+result/
+data/
+docs/
+.idea/
+run.py
