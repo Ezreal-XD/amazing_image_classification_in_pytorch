@@ -1,4 +1,4 @@
-from model.VGG import vgg9, vgg11, vgg13, vgg15, vgg9_bn, vgg11_bn, vgg13_bn, vgg15_bn, vgg15_bn_gap
+from model.VGG import vgg9, vgg11, vgg13, vgg15, vgg9_bn, vgg11_bn, vgg13_bn, vgg15_bn, vgg15_bn_gap, vgg15_bn_gap2
 from model.SQNet import SQNet
 from model.LinkNet import LinkNet
 from model.SegNet import SegNet

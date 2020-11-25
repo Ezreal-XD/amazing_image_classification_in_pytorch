@@ -99,6 +99,7 @@ cfgs = {
     'B': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M'],
     'D': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M'],
     'E': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M'],
+    'GAP2': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 10, 'M'],
     'GAP': [512, 512, 'M', 256, 256, 'M', 128, 256, 512, 512, 'M', 256, 128, 64, 10, 'M'],
 }
 
@@ -220,4 +221,15 @@ def vgg15_bn_gap(pretrained=False, progress=True, **kwargs):
         progress (bool): If True, displays a progress bar of the download to stderr
     """
     return _vgg_gap('vgg19_bn', 'GAP', True, pretrained, progress, **kwargs)
+
+
+def vgg15_bn_gap2(pretrained=False, progress=True, **kwargs):
+    r"""VGG 19-layer model (configuration 'E') with batch normalization
+    `"Very Deep Convolutional Networks For Large-Scale Image Recognition" <https://arxiv.org/pdf/1409.1556.pdf>`_
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+    return _vgg_gap('vgg19_bn', 'GAP2', True, pretrained, progress, **kwargs)
 

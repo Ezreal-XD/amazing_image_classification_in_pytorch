@@ -1,0 +1,11 @@
+Parameters: 13220170 Seed: 1405
+Epoch		Loss(Tr)	mIOU (val)	lr
+0		nan		0.1000		0.3982042
+1		nan				0.3964028
+2		nan				0.3946005
+3		nan				0.3927974
+4		nan				0.3909933
+5		nan				0.3891882
+6		nan				0.3873823
+7		nan				0.3855754
+8		nan				0.3837676

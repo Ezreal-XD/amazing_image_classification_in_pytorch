@@ -12,6 +12,7 @@ from sklearn import metrics
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import torch.backends.cudnn as cudnn
+from torchstat import stat
 from argparse import ArgumentParser
 # user
 from builders.model_builder import build_model
@@ -106,9 +107,10 @@ def train_model(args):
     model = build_model(args.model, num_classes=args.classes)
     # model = models.vgg19(num_classes=args.classes)
     # model = models.shufflenet_v2_x1_0(num_classes=args.classes)
-    # stat(model, (3, 512, 512))
     # model = models.squeezenet1_0(num_classes=args.classes)
     # model = models.resnext50_32x4d(num_classes=args.classes)
+    # stat(model, (3, h, w))
+
 
     init_weight(model, nn.init.kaiming_normal_,
                 nn.BatchNorm2d, 1e-3, 0.1,
