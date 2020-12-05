@@ -1,0 +1,2 @@
+Parameters: 7320606 Seed: 1405
+Epoch		Loss(Tr)	mIOU (val)	lr

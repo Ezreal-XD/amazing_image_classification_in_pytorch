@@ -1,2 +1,4 @@
 Parameters: 12003969 Seed: 1405
 Epoch		Loss(Tr)	mIOU (val)	lr
+0		2.1318		0.1797		0.1000000
+1		2.0503				0.1000000

@@ -59,7 +59,7 @@ def build_dataset_train(dataset, input_size, batch_size, train_type, random_scal
 
         valLoader = data.DataLoader(
             Cifar10ValDataSet(data_dir, val_data_list, transform=validTransform),
-            batch_size=100, shuffle=True, num_workers=num_workers, pin_memory=True)
+            batch_size=1, shuffle=True, num_workers=num_workers, pin_memory=True)
 
         return datas, trainLoader, valLoader
 

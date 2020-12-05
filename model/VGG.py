@@ -20,7 +20,7 @@ class VGG(nn.Module):
             nn.Linear(1024, 512),
             nn.ReLU(True),
             nn.Dropout(),
-            nn.Linear(512, classes),
+            nn.Linear(512, num_classes),
         )
         if init_weights:
             self._initialize_weights()
@@ -48,18 +48,16 @@ class VGG(nn.Module):
 
 class VGG_gap(nn.Module):
 
-    def __init__(self, features, classes=10, init_weights=True):
+    def __init__(self, features, num_classes=10, init_weights=True):
         super(VGG_gap, self).__init__()
         self.features = features
-        self.avgpool = nn.AdaptiveAvgPool2d((2, 2))
-        self.gap = nn.AvgPool2d(2)
+        self.gap = nn.AdaptiveAvgPool2d((1, 1))
 
         if init_weights:
             self._initialize_weights()
 
     def forward(self, x):
         x = self.features(x)
-        x = self.avgpool(x)
         x = self.gap(x)
         x = torch.flatten(x, 1)
         return x
