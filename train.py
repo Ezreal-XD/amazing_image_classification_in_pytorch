@@ -74,7 +74,6 @@ def parse_args():
     return args
 
 
-
 def train_model(args):
     """
     args:

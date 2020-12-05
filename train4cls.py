@@ -55,10 +55,10 @@ def parse_args():
     parser.add_argument('--random_scale', type=bool, default=True, help="input image resize 0.5 to 2")
     parser.add_argument('--lr', type=float, default=5e-4, help="initial learning rate")
     parser.add_argument('--batch_size', type=int, default=256, help="the batch size is set to 16 for 2 GPUs")
-    parser.add_argument('--optim',type=str.lower,default='adam',choices=['sgd','adam','radam','ranger'],help="select optimizer")
+    parser.add_argument('--optim',type=str.lower, default='adam',choices=['sgd','adam','radam','ranger'],help="select optimizer")
     parser.add_argument('--lr_schedule', type=str, default='warmpoly', help='name of lr schedule: poly')
     parser.add_argument('--num_cycles', type=int, default=1, help='Cosine Annealing Cyclic LR')
-    parser.add_argument('--poly_exp', type=float, default=0.9,help='polynomial LR exponent')
+    parser.add_argument('--poly_exp', type=float, default=0.9, help='polynomial LR exponent')
     parser.add_argument('--warmup_iters', type=int, default=500, help='warmup iterations')
     parser.add_argument('--warmup_factor', type=float, default=1.0 / 3, help='warm up start lr=warmup_factor*lr')
     parser.add_argument('--use_label_smoothing', action='store_true', default=False, help="CrossEntropy2d Loss with label smoothing or not")
@@ -112,9 +112,9 @@ def train_model(args):
     # stat(model, (3, h, w))
 
 
-    init_weight(model, nn.init.kaiming_normal_,
-                nn.BatchNorm2d, 1e-3, 0.1,
-                mode='fan_in')
+    # init_weight(model, nn.init.kaiming_normal_,
+    #             nn.BatchNorm2d, 1e-3, 0.1,
+    #             mode='fan_in')
 
     print("=====> computing network parameters and FLOPs")
     total_paramters = calParams(model)
@@ -189,7 +189,7 @@ def train_model(args):
     # define optimization strategy
     if args.optim == 'sgd':
         optimizer = torch.optim.SGD(
-            filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, momentum=0.9, weight_decay=1e-4)
+            filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     elif args.optim == 'adam':
         optimizer = torch.optim.Adam(
             filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-4)
@@ -303,6 +303,8 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
         elif args.lr_schedule == 'warmpoly':
             scheduler = WarmupPolyLR(optimizer, T_max=args.max_iter, cur_iter=args.cur_iter, warmup_factor=1.0 / 3,
                                  warmup_iters=args.warmup_iters, power=0.9)
+        elif args.lr_schedule == 'cosine':
+            scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.max_iter)
 
         lr = optimizer.param_groups[0]['lr']
 
@@ -411,6 +413,9 @@ if __name__ == '__main__':
         args.input_size = '512,512'
     elif args.dataset == 'cifar10':
         args.classes = 10
+        args.input_size = '32,32'
+    elif args.dataset == 'hansim':
+        args.classes = 3755
         args.input_size = '32,32'
     else:
         raise NotImplementedError(
