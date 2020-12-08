@@ -54,7 +54,7 @@ class Inception(nn.Module):
 
 
 class GoogLeNet(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes=10):
         super(GoogLeNet, self).__init__()
         self.pre_layers = nn.Sequential(
             nn.Conv2d(3, 192, kernel_size=3, padding=1),
