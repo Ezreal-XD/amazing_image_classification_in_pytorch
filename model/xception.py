@@ -26,6 +26,7 @@ class SeperableConv2d(nn.Module):
 
         return x
 
+
 class EntryFlow(nn.Module):
 
     def __init__(self):
@@ -42,7 +43,7 @@ class EntryFlow(nn.Module):
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True)
         )
-
+        # 0.5x: 32 -> 15
         self.conv3_residual = nn.Sequential(
             SeperableConv2d(64, 128, 3, padding=1),
             nn.BatchNorm2d(128),
@@ -56,7 +57,7 @@ class EntryFlow(nn.Module):
             nn.Conv2d(64, 128, 1, stride=2),
             nn.BatchNorm2d(128),
         )
-
+        # 0.5x: 15 -> 7
         self.conv4_residual = nn.Sequential(
             nn.ReLU(inplace=True),
             SeperableConv2d(128, 256, 3, padding=1),
@@ -72,7 +73,7 @@ class EntryFlow(nn.Module):
             nn.BatchNorm2d(256),
         )
 
-        #no downsampling
+        # no downsampling
         self.conv5_residual = nn.Sequential(
             nn.ReLU(inplace=True),
             SeperableConv2d(256, 728, 3, padding=1),
@@ -101,8 +102,9 @@ class EntryFlow(nn.Module):
         residual = self.conv5_residual(x)
         shortcut = self.conv5_shortcut(x)
         x = residual + shortcut
-
+        # 7x7x728
         return x
+
 
 class MiddleFLowBlock(nn.Module):
 
@@ -134,6 +136,7 @@ class MiddleFLowBlock(nn.Module):
         shortcut = self.shortcut(x)
 
         return shortcut + residual
+
 
 class MiddleFlow(nn.Module):
     def __init__(self, block):
@@ -192,6 +195,7 @@ class ExitFLow(nn.Module):
         output = self.avgpool(output)
 
         return output
+
 
 class Xception(nn.Module):
 

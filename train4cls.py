@@ -33,8 +33,7 @@ if torch_ver == '0.3':
     from torch.autograd import Variable
 # print(torch_ver)
 
-GLOBAL_SEED = 1405
-
+GLOBAL_SEED = 1305
 
 
 def parse_args():
@@ -49,7 +48,7 @@ def parse_args():
     parser.add_argument('--train_type', type=str, default="trainval",
                         help="ontrain for training on train set, ontrainval for training on train+val set")
     # training hyper params
-    parser.add_argument('--max_epochs', type=int, default=200,
+    parser.add_argument('--max_epochs', type=int, default=100,
                         help="the number of epochs: 300 for train set, 350 for train+val set")
     parser.add_argument('--random_mirror', type=bool, default=True, help="input image random mirror")
     parser.add_argument('--random_scale', type=bool, default=True, help="input image resize 0.5 to 2")
@@ -413,6 +412,9 @@ if __name__ == '__main__':
         args.input_size = '512,512'
     elif args.dataset == 'cifar10':
         args.classes = 10
+        args.input_size = '32,32'
+    elif args.dataset == 'cifar100':
+        args.classes = 100
         args.input_size = '32,32'
     elif args.dataset == 'hansim':
         args.classes = 3755

@@ -3,6 +3,7 @@ import pickle
 from torch.utils import data
 import torchvision.transforms as transforms
 from data.cifar10 import Cifar10DataSet, Cifar10ValDataSet, Cifar10TrainInform, Cifar10TestDataSet
+from data.cifar100 import Cifar100DataSet, Cifar100ValDataSet, Cifar100TrainInform, Cifar100TestDataSet
 from data.hansim import HanSimDataSet, HanSimValDataSet, HanSimTrainInform, HanSimTestDataSet
 
 
@@ -18,6 +19,9 @@ def build_dataset_train(dataset, input_size, batch_size, train_type, random_scal
         print("%s is not found" % (inform_data_file))
         if dataset == 'cifar10':
             dataCollect = Cifar10TrainInform(data_dir, 10, train_set_file=dataset_list,
+                                            inform_data_file=inform_data_file)
+        elif dataset == 'cifar100':
+            dataCollect = Cifar100TrainInform(data_dir, 100, train_set_file=dataset_list,
                                             inform_data_file=inform_data_file)
         elif dataset == 'hansim':
             dataCollect = HanSimTrainInform(data_dir, 3755, train_set_file=dataset_list,
@@ -35,6 +39,35 @@ def build_dataset_train(dataset, input_size, batch_size, train_type, random_scal
         datas = pickle.load(open(inform_data_file, "rb"))
 
     if dataset == "cifar10":
+        normMean = datas['mean']
+        normStd = datas['std']
+        # normMean = [0.4914, 0.4822, 0.4465],
+        # normStd = [0.2023, 0.1994, 0.2010]
+        normTransform = transforms.Normalize(normMean, normStd)
+        trainTransform = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normTransform
+        ])
+
+        validTransform = transforms.Compose([
+            transforms.ToTensor(),
+            normTransform
+        ])
+
+        trainLoader = data.DataLoader(
+            Cifar10DataSet(data_dir, train_data_list, transform=trainTransform),
+            batch_size=batch_size, shuffle=True, num_workers=num_workers,
+            pin_memory=True, drop_last=True)
+
+        valLoader = data.DataLoader(
+            Cifar10ValDataSet(data_dir, val_data_list, transform=validTransform),
+            batch_size=1, shuffle=True, num_workers=num_workers, pin_memory=True)
+
+        return datas, trainLoader, valLoader
+
+    elif dataset == "cifar100":
         normMean = datas['mean']
         normStd = datas['std']
         # normMean = [0.4914, 0.4822, 0.4465],
@@ -107,6 +140,9 @@ def build_dataset_test(dataset, num_workers, none_gt=False):
         print("%s is not found" % (inform_data_file))
         if dataset == 'cifar10':
             dataCollect = Cifar10TrainInform(data_dir, 10, train_set_file=dataset_list,
+                                            inform_data_file=inform_data_file)
+        if dataset == 'cifar100':
+            dataCollect = Cifar100TrainInform(data_dir, 100, train_set_file=dataset_list,
                                             inform_data_file=inform_data_file)
         elif dataset == 'hansim':
             dataCollect = HanSimTrainInform(data_dir, 3755, train_set_file=dataset_list,

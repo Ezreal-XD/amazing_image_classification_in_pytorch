@@ -20,7 +20,7 @@ class ShapeNet(nn.Module):
             nn.Linear(1024, 512),
             nn.ReLU(True),
             nn.Dropout(),
-            nn.Linear(512, classes),
+            nn.Linear(512, num_classes),
         )
         if init_weights:
             self._initialize_weights()
