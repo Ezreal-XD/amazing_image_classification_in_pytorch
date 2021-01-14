@@ -45,7 +45,7 @@ def parse_args():
     parser.add_argument('--num_workers', type=int, default=8, help=" the number of parallel threads")
     parser.add_argument('--classes', type=int, default=10,
                         help="the number of classes in the dataset. 19 and 11 for cityscapes and camvid, respectively")
-    parser.add_argument('--train_type', type=str, default="trainval",
+    parser.add_argument('--train_type', type=str, default="train",
                         help="ontrain for training on train set, ontrainval for training on train+val set")
     # training hyper params
     parser.add_argument('--max_epochs', type=int, default=100,
@@ -152,8 +152,8 @@ def train_model(args):
             print("single GPU for training")
             model = model.cuda()  # 1-card data parallel
 
-    args.savedir = (args.savedir + args.dataset + '/' + args.model + 'bs'
-                    + str(args.batch_size) + 'gpu' + str(args.gpu_nums) + "_" + str(args.train_type) + '/')
+    args.savedir = (args.savedir + args.dataset + '/' + args.model + '_bs'
+                    + str(args.batch_size) + '_gpu' + str(args.gpu_nums) + "_" + str(args.train_type) + '/')
 
     if not os.path.exists(args.savedir):
         os.makedirs(args.savedir)
@@ -180,8 +180,9 @@ def train_model(args):
         logger = open(logFileLoc, 'a')
     else:
         logger = open(logFileLoc, 'w')
-        logger.write("Parameters: %s Seed: %s" % (str(total_paramters), GLOBAL_SEED))
-        logger.write("\n%s\t\t%s\t%s\t%s" % ('Epoch', 'Loss(Tr)', 'mIOU (val)', 'lr'))
+        logger.write("Parameters: %s MB Seed: %s" % (str(total_paramters), GLOBAL_SEED))
+        logger.write(args)
+        logger.write("\n%s\t\t%s\t%s\t%s" % ('Epoch', 'Loss(Tr)', 'acc (val)', 'lr'))
     logger.flush()
 
 
@@ -237,8 +238,9 @@ def train_model(args):
             # print("Epoch No.: %d\tTrain Loss = %.4f\t lr= %.6f\n" % (epoch, lossTr, lr))
 
         # save the model
-        model_file_name = args.savedir + '/model_' + str(epoch + 1) + '.pth'
-        state = {"epoch": epoch + 1, "model": model.state_dict()}
+        model_file_name = args.savedir + '/' + args.model + '.pth'
+        # model_file_name = args.savedir + '/model_' + str(epoch + 1) + '.pth'
+        state = {"epoch": epoch, "model": model.state_dict()}
 
         if acc > best_acc:
             torch.save(state, model_file_name)
@@ -260,7 +262,7 @@ def train_model(args):
 
             fig2, ax2 = plt.subplots(figsize=(11, 8))
 
-            ax2.plot(epoches, acc_val_list, label="Val IoU")
+            ax2.plot(epoches, acc_val_list, label="Val acc")
             ax2.set_title("acc vs epochs")
             ax2.set_xlabel("Epochs")
             ax2.set_ylabel("Current acc")
@@ -341,7 +343,7 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
     # print("Remaining training time = %d hour %d minutes %d seconds" % (h, m, s))
     # print("epoch_loss:", epoch_loss)
     average_epoch_loss_train = sum(epoch_loss) / len(epoch_loss)
-    print(f"epoch[{epoch+1}/{args.max_epochs}], lr: {lr}, avg_loss: {average_epoch_loss_train}, ETA:{h}hrs {m}mins")
+    print(f"epoch[{epoch}/{args.max_epochs}], lr: {lr}, avg_loss: {average_epoch_loss_train}, ETA:{h}hrs {m}mins")
 
     return average_epoch_loss_train, lr
 
