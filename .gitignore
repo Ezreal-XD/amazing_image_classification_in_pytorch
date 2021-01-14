@@ -6,6 +6,7 @@ __pycache__/
 .idea/
 result/
 data/
+checkpoint/
 docs/
 .idea/
 run.py
